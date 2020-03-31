@@ -28,14 +28,14 @@ public class GUI extends JFrame implements ActionListener {
     
     public JFrame mainWindow;
     public JPanel pLogin, pRegister, pApp;
-    public JTextField tfLog, tfName, tfSurname, tfLogin, tfCash;
+    public JTextField tfLog, tfUserName, tfLogin, tfCash;
     public JPasswordField pfPass, pfPassword;
-    public JButton bLog, bNuser, bCreuser, bApply, bLogout;
-    public JLabel lLogin, lPassword, lName, lSurname, lCash, lUsername, lPass, lAppName,lAppSurname, lAppCash, lAppBorder;
+    public JButton bLog, bNuser, bCreuser, bApply, bLogout, bReturnLog;
+    public JLabel lLoginLog, lPassword, lName, lCash, lLogin, lPass, lAppName,lAppSurname, lAppCash, lAppBorder;
     
     public JLabel lTestBazy;
     
-    public static String getLog, getPasswd;
+    public static String getLog;
     
     
     static final Color color = new Color(45, 70, 70);
@@ -62,11 +62,11 @@ public class GUI extends JFrame implements ActionListener {
         mainWindow.getContentPane().add(pLogin, BorderLayout.CENTER);
         pLogin.setVisible(true);
         
-        lLogin = new JLabel("USERNAME: ",JLabel.CENTER);
-        lLogin.setFont(font2);
-        lLogin.setBounds(76,90,150,30);
-        lLogin.setForeground(Color.WHITE);
-        pLogin.add(lLogin);
+        lLoginLog = new JLabel("LOGIN: ",JLabel.CENTER);
+        lLoginLog.setFont(font2);
+        lLoginLog.setBounds(76,90,150,30);
+        lLoginLog.setForeground(Color.WHITE);
+        pLogin.add(lLoginLog);
         
         lPassword = new JLabel("PASSWORD: ",JLabel.CENTER);
         lPassword.setFont(font2);
@@ -104,19 +104,13 @@ public class GUI extends JFrame implements ActionListener {
         lName.setFont(font1);
         lName.setBounds(117,50,100,30);
         lName.setForeground(Color.WHITE);
-        pRegister.add(lName);
+        pRegister.add(lName);      
         
-        lSurname = new JLabel("SURNAME: ",JLabel.CENTER);
-        lSurname.setFont(font1);
-        lSurname.setBounds(101,100,100,30);
-        lSurname.setForeground(Color.WHITE);
-        pRegister.add(lSurname);
-        
-        lUsername = new JLabel("USERNAME: ",JLabel.CENTER);
-        lUsername.setFont(font1);
-        lUsername.setBounds(70,150,150,30);
-        lUsername.setForeground(Color.WHITE);
-        pRegister.add(lUsername);
+        lLogin = new JLabel("LOGIN: ",JLabel.CENTER);
+        lLogin.setFont(font1);
+        lLogin.setBounds(70,150,150,30);
+        lLogin.setForeground(Color.WHITE);
+        pRegister.add(lLogin);
         
         lPass = new JLabel("PASSWORD: ",JLabel.CENTER);
         lPass.setFont(font1);
@@ -131,13 +125,9 @@ public class GUI extends JFrame implements ActionListener {
         pRegister.add(lCash);
 
         
-        tfName = new JTextField("");
-        tfName.setBounds(200,50,200,30);
-        pRegister.add(tfName);
-        
-        tfSurname = new JTextField("");
-        tfSurname.setBounds(200,100,200,30);
-        pRegister.add(tfSurname);
+        tfUserName = new JTextField("");
+        tfUserName.setBounds(200,50,200,30);
+        pRegister.add(tfUserName);
         
         tfLogin = new JTextField("");
         tfLogin.setBounds(200,150,200,30);
@@ -152,9 +142,14 @@ public class GUI extends JFrame implements ActionListener {
         pRegister.add(pfPassword);
         
         bNuser = new JButton("Sign Up");
-        bNuser.setBounds(200,300,160,30);
+        bNuser.setBounds(250,300,160,30);
         bNuser.addActionListener(this);
         pRegister.add(bNuser);
+        
+        bReturnLog = new JButton("Return");
+        bReturnLog.setBounds(70,300,160,30);
+        bReturnLog.addActionListener(this);
+        pRegister.add(bReturnLog);
         
         //PANEL APLIKACJI
         pApp = new JPanel();
@@ -217,13 +212,10 @@ public class GUI extends JFrame implements ActionListener {
         } 
         
         if (src == bLog) {
-                       
-            
-           
+             
             getLog = tfLog.getText();
-            getPasswd = pfPass.getText();
-           
-            boolean check = dataBase.checkUser(getLog, getPasswd);
+            
+            boolean check = dataBase.checkUser(getLog, pfPass.getText());
            
             if(check) {
                 
@@ -231,13 +223,7 @@ public class GUI extends JFrame implements ActionListener {
                 pfPass.setText("");
                 pLogin.setVisible(false);
                 pApp.setVisible(true);
-               
-                //dataBase.polaczenie("SELECT * FROM USER");
-                
-               /* 
-                lAppName.setText(dataBase.user.get(1).getName());
-                lAppSurname.setText(dataBase.user.get(1).getSurname());
-                lAppCash.setText(Integer.toString(dataBase.user.get(1).getCash()));*/
+                            
 
             } else {
                 JOptionPane.showMessageDialog(null, "Coś poszło nie tak. Spróbuj ponownie.");
@@ -249,8 +235,62 @@ public class GUI extends JFrame implements ActionListener {
         }
         
         if (src == bNuser) {
-            pRegister.setVisible(false);
+            
+            String n = tfUserName.getText();
+            String l = tfLogin.getText();
+            String c = tfCash.getText();
+            
+            
+            if(!n.isEmpty() && !l.isEmpty() && !c.isEmpty() && !pfPassword.getText().isEmpty()){
+                
+                boolean checkUserName = dataBase.chechUserName(n);
+                
+                if(checkUserName) {
+                    
+                    JOptionPane.showMessageDialog(null, "Nazwa użytkownika jest już zajęta.");
+                    
+                } else {
+                    
+                    String Q = "INSERT INTO USER (user_name, cash) VALUES ('" + n + "', '" + c + "')";
+                    dataBase.addUser(Q);
+                    
+                    String table = "idUSER";
+                    String Q1 = "SELECT id_user FROM USER WHERE user_name = '" + n + "'";
+                    dataBase.connection(Q1, table);
+                    
+                    int idUs = dataBase.idUser.get(0);
+                    String Q2 = "INSERT INTO LOGINDATA (login, password, id_O_user) VALUES ('" + l + "', '" + pfPassword.getText() + "', '" + idUs + "')";
+                    dataBase.addUser(Q2);
+                    
+                    JOptionPane.showMessageDialog(null, "Konto użytkownika zostało stworzone poprawnie.");
+                    
+                    pRegister.setVisible(false);
+                    pLogin.setVisible(true);
+                
+                    tfUserName.setText("");
+                    tfLogin.setText("");
+                    tfCash.setText("");
+                    pfPassword.setText("");
+                }
+                 
+            }else {
+                
+                JOptionPane.showMessageDialog(null, "Sprawdź czy wszystkie pola są wypełnione.");
+                
+            }
+            
+        }
+        
+        if (src == bReturnLog) {
+            
             pLogin.setVisible(true);
+            pRegister.setVisible(false);
+            
+            tfUserName.setText("");          
+            tfLogin.setText("");            
+            tfCash.setText("");            
+            pfPassword.setText("");
+           
         }
         
         if (src == bLogout) {

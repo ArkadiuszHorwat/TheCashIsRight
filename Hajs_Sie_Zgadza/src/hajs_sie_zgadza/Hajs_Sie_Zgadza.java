@@ -16,7 +16,7 @@ public class Hajs_Sie_Zgadza {
      */
     public static void main(String[] args) {
         
-        //dataBase.polaczenie("SELECT * FROM USER");
+        //dataBase.connection("SELECT * FROM APPDATA");
         GUI gui = new GUI();
         gui.mainWindow.setVisible(true);
         
