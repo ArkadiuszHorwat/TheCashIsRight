@@ -12,6 +12,7 @@ public class dataBase {
     
     static String URL = "jdbc:mysql://127.0.0.1/hajs_sie_zgadza?user=root&password=";
     
+    
     public static boolean checkUserData(String getUserData, String query) {
         
         boolean check = false;

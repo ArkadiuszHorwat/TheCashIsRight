@@ -12,8 +12,6 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
@@ -21,7 +19,10 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.border.LineBorder;
 
 /**
  *
@@ -36,6 +37,8 @@ public class GUI extends JFrame implements ActionListener {
     public JButton bLog, bNuser, bCreuser, bApply, bLogout, bReturnLog;
     public JLabel lLoginLog, lPassword, lName, lCash, lLogin, lPass, lAppName, lAppCash, lAppBorder, lAppCause, lAppHowM, lAppSign;
     public JComboBox cbSign;
+    public JTextArea taData;
+    public JScrollPane spData;
     
     static final Color color = new Color(45, 70, 70);
     
@@ -48,6 +51,7 @@ public class GUI extends JFrame implements ActionListener {
         mainWindow = new JFrame("HAJS SIE ZGADZA");
         mainWindow.setSize(500,400);
         mainWindow.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        //mainWindow.setLayout(null);
         mainWindow.getContentPane().setLayout(new CardLayout(0,0));
         mainWindow.setLocationRelativeTo(null);
         mainWindow.setResizable(false);
@@ -217,8 +221,21 @@ public class GUI extends JFrame implements ActionListener {
         cbSign.setFont(font1);
         cbSign.setSelectedIndex(2);
         cbSign.setBounds(181,210,40,30);
-        pApp.add(cbSign);
+        pApp.add(cbSign);        
         
+        taData = new JTextArea("");
+        taData.setLineWrap(true);
+        taData.setEditable(false);
+        taData.setBackground(Color.WHITE);
+        taData.setBorder(new LineBorder(Color.BLACK));
+        taData.setFont(new Font("Serif", Font.ITALIC, 14));
+        taData.setBounds(260,110,200,200);
+        
+        spData = new JScrollPane(taData);
+        spData.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+        spData.setBounds(260,110,200,200);
+        pApp.add(spData);
+                
         bApply = new JButton("APPLY");
         bApply.setBounds(20,285,120,30);
         bApply.addActionListener(this);
@@ -254,6 +271,8 @@ public class GUI extends JFrame implements ActionListener {
         
         if (src == bLog) {
             String getLog = tfLog.getText();
+            dataBase.appData.clear();
+            taData.setText("");
             
             boolean check = dataBase.checkUser(getLog, pfPass.getText());
            
@@ -271,7 +290,24 @@ public class GUI extends JFrame implements ActionListener {
                 lAppCash.setText(String.valueOf(dataBase.user.get(0).getCash()));
                 
                 dataBase.user.clear();
+                
+                String select = "APPDATA";
+                String que4 = "SELECT * FROM APPDATA WHERE id_O1_user = '"+ idUser +"'";
+                dataBase.connection(que4, select);
+                
+                String selectCause;
+                double selectHowM;
+                          
+                for(int i = 0; i<dataBase.appData.size(); i++) {
+                    selectCause = dataBase.appData.get(i).getCause();
+                    selectHowM = dataBase.appData.get(i).getHowMuch();
+                    taData.append(" "+selectCause+" "+selectHowM+"\n");
+                    
+                }
+                
+                dataBase.appData.clear();
                 dataBase.id.clear();
+                
                 
                 pLogin.setVisible(false);
                 pApp.setVisible(true);
@@ -362,9 +398,11 @@ public class GUI extends JFrame implements ActionListener {
             tfCauseDes.setText("");
             tfCause.setText("");
             tfHowM.setText("");
+            taData.setText("");
             cbSign.setSelectedIndex(2);
             dataBase.user.clear();
             dataBase.id.clear();
+            dataBase.appData.clear();
             
         }
         
@@ -375,6 +413,7 @@ public class GUI extends JFrame implements ActionListener {
             String use = lAppName.getText();
             String appC = lAppCash.getText();
             char ch = (char)cbSign.getSelectedItem();
+            taData.setText("");
             
             if(ch == '-'){
                 how = '-'+how;
@@ -404,9 +443,24 @@ public class GUI extends JFrame implements ActionListener {
                 double y = Double.parseDouble(appC);
                 double sum = x + y;
                 String que3 = "UPDATE USER SET cash = '" + sum + "' WHERE id_user = '" + iduse + "'";
-                //UPDATE `user` SET `cash` = '100' WHERE `user`.`id_user` = 13;
                 dataBase.add(que3);
                 lAppCash.setText(""+sum+"");
+                dataBase.appData.clear();
+                
+                String select = "APPDATA";
+                String que4 = "SELECT * FROM APPDATA WHERE id_O1_user = '"+ iduse +"'";
+                dataBase.connection(que4, select);
+                
+                String selectCause;
+                double selectHowM;
+                          
+                for(int i = 0; i<dataBase.appData.size(); i++) {
+                    selectCause = dataBase.appData.get(i).getCause();
+                    selectHowM = dataBase.appData.get(i).getHowMuch();
+                    taData.append(" "+selectCause+" "+selectHowM+"\n");
+                    
+                }
+                
                 dataBase.appData.clear();
                 
                 tfCauseDes.setText("");

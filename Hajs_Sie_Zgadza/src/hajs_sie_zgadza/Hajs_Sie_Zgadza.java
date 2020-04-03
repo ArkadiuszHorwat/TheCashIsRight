@@ -17,9 +17,19 @@ public class Hajs_Sie_Zgadza {
     public static void main(String[] args) {
         
         GUI gui = new GUI();
-        gui.mainWindow.setVisible(true);
-       
+        gui.mainWindow.setVisible(true);       
         
+        String select = "APPDATA";
+                String que4 = "SELECT * FROM APPDATA";
+                dataBase.connection(que4, select);
+                String selectCause;
+                double selectHowM;
+           
+                for(int i = 0; i<dataBase.appData.size(); i++) {
+                    selectCause = dataBase.appData.get(i).getCause();
+                    selectHowM = dataBase.appData.get(i).getHowMuch();
+                    System.out.println(" "+selectCause+" "+selectHowM+"\n ");
+                }
     }
     
 }
