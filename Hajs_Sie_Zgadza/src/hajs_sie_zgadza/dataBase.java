@@ -8,28 +8,28 @@ public class dataBase {
     
     public static List<User> user = new ArrayList<>();
     public static List<AppData> appData = new ArrayList<>();
-    public static List<Integer> idUser = new ArrayList<>();   
+    public static List<Integer> id = new ArrayList<>();   
     
     static String URL = "jdbc:mysql://127.0.0.1/hajs_sie_zgadza?user=root&password=";
     
-    public static boolean chechUserLog(String getUserLog) {
+    public static boolean checkUserData(String getUserData, String query) {
         
-        boolean checkLog = false;
+        boolean check = false;
         Connection conn = null;
 
         try {
             conn = DriverManager.getConnection(URL);
             Class.forName("com.mysql.cj.jdbc.Driver");
 
-            String sql = "SELECT login FROM LOGINDATA WHERE login=?";
+            String sql = query;
             PreparedStatement pst = conn.prepareStatement(sql);
-            pst.setString(1, getUserLog);
+            pst.setString(1, getUserData);
             ResultSet rs = pst.executeQuery();
             
             if(rs.next()){
-                checkLog = true;
+                check = true;
             }else {
-                checkLog = false;                
+                check = false;                
             }
       
            conn.close();
@@ -38,41 +38,11 @@ public class dataBase {
             System.out.println("Error!");
         }
         
-        return checkLog;
+        return check;
         
     }
     
-    public static boolean chechUserName(String getUserName) {
-        
-        boolean checkName = false;
-        Connection conn = null;
-
-        try {
-            conn = DriverManager.getConnection(URL);
-            Class.forName("com.mysql.cj.jdbc.Driver");
-
-            String sql = "SELECT USER_NAME FROM USER WHERE user_name=?";
-            PreparedStatement pst = conn.prepareStatement(sql);
-            pst.setString(1, getUserName);
-            ResultSet rs = pst.executeQuery();
-            
-            if(rs.next()){
-                checkName = true;
-            }else {
-                checkName = false;                
-            }
-      
-           conn.close();
-
-        }catch(Exception e){
-            System.out.println("Error!");
-        }
-        
-        return checkName;
-        
-    }
-    
-    public static void addUser(String query) {
+    public static void add(String query) {
         Connection conn = null;
 
         try {
@@ -140,9 +110,9 @@ public class dataBase {
                 if(table.equals("USER")){
                     user.add(new User(rs.getInt(1),rs.getString(2),rs.getDouble(3)));
                 }else if(table.equals("APPDATA")){
-                    appData.add(new AppData(rs.getInt(1),rs.getString(2),rs.getDouble(3),rs.getInt(4)));
-                }else if(table.equals("idUSER")){
-                    idUser.add(rs.getInt(1));
+                    appData.add(new AppData(rs.getInt(1),rs.getString(2),rs.getDouble(3),rs.getString(4).charAt(0),rs.getInt(5), rs.getString(6))); 
+                }else if(table.equals("id")){
+                    id.add(rs.getInt(1));
                 }
                 
             }

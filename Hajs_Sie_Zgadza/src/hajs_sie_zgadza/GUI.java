@@ -15,6 +15,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -30,10 +31,11 @@ public class GUI extends JFrame implements ActionListener {
     
     public JFrame mainWindow;
     public JPanel pLogin, pRegister, pApp;
-    public JTextField tfLog, tfUserName, tfLogin, tfCash;
+    public JTextField tfLog, tfUserName, tfLogin, tfCash, tfCause, tfHowM, tfCauseDes;
     public JPasswordField pfPass, pfPassword;
     public JButton bLog, bNuser, bCreuser, bApply, bLogout, bReturnLog;
-    public JLabel lLoginLog, lPassword, lName, lCash, lLogin, lPass, lAppName, lAppCash, lAppBorder;
+    public JLabel lLoginLog, lPassword, lName, lCash, lLogin, lPass, lAppName, lAppCash, lAppBorder, lAppCause, lAppHowM, lAppSign;
+    public JComboBox cbSign;
     
     static final Color color = new Color(45, 70, 70);
     
@@ -72,12 +74,12 @@ public class GUI extends JFrame implements ActionListener {
         pLogin.add(lPassword);
         
         bLog = new JButton("Sign In");
-        bLog.setBounds(85,220,160,30);
+        bLog.setBounds(100,220,140,30);
         bLog.addActionListener(this);
         pLogin.add(bLog);
         
-        bCreuser = new JButton("Create a new account");
-        bCreuser.setBounds(260,220,160,30);
+        bCreuser = new JButton("New account");
+        bCreuser.setBounds(260,220,140,30);
         bCreuser.addActionListener(this);
         pLogin.add(bCreuser);
         
@@ -139,12 +141,12 @@ public class GUI extends JFrame implements ActionListener {
         pRegister.add(pfPassword);
         
         bNuser = new JButton("Sign Up");
-        bNuser.setBounds(70,300,160,30);
+        bNuser.setBounds(90,300,140,30);
         bNuser.addActionListener(this);
         pRegister.add(bNuser);
         
         bReturnLog = new JButton("Return");
-        bReturnLog.setBounds(250,300,160,30);
+        bReturnLog.setBounds(240,300,140,30);
         bReturnLog.addActionListener(this);
         pRegister.add(bReturnLog);
         
@@ -156,33 +158,78 @@ public class GUI extends JFrame implements ActionListener {
         mainWindow.getContentPane().add(pApp, BorderLayout.CENTER);
         pApp.setVisible(false);
         
-        lAppName = new JLabel("");
-        lAppName.setFont(font1);
-        lAppName.setBounds(20,10,200,30);
+        lAppName = new JLabel("",JLabel.CENTER);
+        lAppName.setFont(font2);
+        lAppName.setBounds(150,10,200,30);
         lAppName.setForeground(Color.WHITE);
         pApp.add(lAppName);
         
-        lAppCash = new JLabel("");
-        lAppCash.setFont(font1);
-        lAppCash.setBounds(20,35,200,30);
+        lAppCash = new JLabel("",JLabel.CENTER);
+        lAppCash.setFont(font2);
+        lAppCash.setBounds(150,35,200,30);
         lAppCash.setForeground(Color.WHITE);
         pApp.add(lAppCash);  
                                  
-        lAppBorder = new JLabel("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$");
-        lAppBorder.setFont(font1);
-        lAppBorder.setBounds(10,65,500,30);
+        lAppBorder = new JLabel("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$");
+        lAppBorder.setFont(font2);
+        lAppBorder.setBounds(7,65,500,30);
         lAppBorder.setForeground(Color.WHITE);
         pApp.add(lAppBorder); 
         
+        lAppCause = new JLabel("Cause: ");
+        lAppCause.setFont(font1);
+        lAppCause.setBounds(20,140,100,30);
+        lAppCause.setForeground(Color.WHITE);
+        pApp.add(lAppCause);
+        
+        lAppHowM = new JLabel("How much: ");
+        lAppHowM.setFont(font1);
+        lAppHowM.setBounds(20,180,100,30);
+        lAppHowM.setForeground(Color.WHITE);
+        pApp.add(lAppHowM);
+        
+        lAppSign = new JLabel("+/-: ");
+        lAppSign.setFont(font1);
+        lAppSign.setBounds(150,210,40,30);
+        lAppSign.setForeground(Color.WHITE);
+        pApp.add(lAppSign);
+        
+        JLabel lCauseDes = new JLabel("Cause designation: ");
+        lCauseDes.setFont(font1);
+        lCauseDes.setBounds(20,110,150,30);
+        lCauseDes.setForeground(Color.WHITE);
+        pApp.add(lCauseDes);
+        
+        tfCauseDes  = new JTextField("");
+        tfCauseDes.setBounds(170,110,50,30);
+        pApp.add(tfCauseDes);
+        
+        tfCause = new JTextField("");
+        tfCause.setBounds(100,140,120,30);
+        pApp.add(tfCause);
+        
+        tfHowM = new JTextField("");
+        tfHowM.setBounds(100,180,120,30);
+        pApp.add(tfHowM);
+        
+        Character[] sign = { '+','-',' ' };
+        cbSign = new JComboBox(sign);
+        cbSign.setFont(font1);
+        cbSign.setSelectedIndex(2);
+        cbSign.setBounds(181,210,40,30);
+        pApp.add(cbSign);
+        
         bApply = new JButton("APPLY");
-        bApply.setBounds(220,30,120,30);
+        bApply.setBounds(20,285,120,30);
         bApply.addActionListener(this);
         pApp.add(bApply);
         
         bLogout = new JButton("SIGN OUT");
-        bLogout.setBounds(350,30,120,30);
+        bLogout.setBounds(20,320,120,30);
         bLogout.addActionListener(this);
         pApp.add(bLogout);
+        
+        
        
     }
     
@@ -211,10 +258,10 @@ public class GUI extends JFrame implements ActionListener {
             boolean check = dataBase.checkUser(getLog, pfPass.getText());
            
             if(check) {
-                String idUSER = "idUSER";
+                String idUSER = "id";
                 String Q = "SELECT id_O_user FROM LOGINDATA WHERE login = '" + getLog + "'";
                 dataBase.connection(Q, idUSER);
-                int idUser = dataBase.idUser.get(0);
+                int idUser = dataBase.id.get(0);
                
                 String User = "USER";
                 String Q1 = "SELECT * FROM USER WHERE id_user = '" + idUser + "'";
@@ -224,7 +271,7 @@ public class GUI extends JFrame implements ActionListener {
                 lAppCash.setText(String.valueOf(dataBase.user.get(0).getCash()));
                 
                 dataBase.user.clear();
-                dataBase.idUser.clear();
+                dataBase.id.clear();
                 
                 pLogin.setVisible(false);
                 pApp.setVisible(true);
@@ -250,8 +297,10 @@ public class GUI extends JFrame implements ActionListener {
             
             if(!n.isEmpty() && !l.isEmpty() && !c.isEmpty() && !pfPassword.getText().isEmpty()){
                 
-                boolean checkUserName = dataBase.chechUserName(n);
-                boolean checkUserLog = dataBase.chechUserLog(l);
+                String queryLog = "SELECT login FROM LOGINDATA WHERE login=?";
+                String queryNam = "SELECT USER_NAME FROM USER WHERE user_name=?";
+                boolean checkUserName = dataBase.checkUserData(n, queryNam);
+                boolean checkUserLog = dataBase.checkUserData(l, queryLog);
                 
                 if(checkUserName || checkUserLog) {
                     
@@ -262,19 +311,19 @@ public class GUI extends JFrame implements ActionListener {
                 } else{
                     
                     String Q = "INSERT INTO USER (user_name, cash) VALUES ('" + n + "', '" + c + "')";
-                    dataBase.addUser(Q);
+                    dataBase.add(Q);
                     
-                    String idUser = "idUSER";
+                    String idUser = "id";
                     String Q1 = "SELECT id_user FROM USER WHERE user_name = '" + n + "'";
                     dataBase.connection(Q1, idUser);
                     
-                    int idUs = dataBase.idUser.get(0);
+                    int idUs = dataBase.id.get(0);
                     String Q2 = "INSERT INTO LOGINDATA (login, password, id_O_user) VALUES ('" + l + "', '" + pfPassword.getText() + "', '" + idUs + "')";
-                    dataBase.addUser(Q2);
+                    dataBase.add(Q2);
                     
                     JOptionPane.showMessageDialog(null, "Konto użytkownika zostało stworzone poprawnie.");
                     
-                    dataBase.idUser.clear();
+                    dataBase.id.clear();
                     
                     pRegister.setVisible(false);
                     pLogin.setVisible(true);
@@ -308,9 +357,63 @@ public class GUI extends JFrame implements ActionListener {
         if (src == bLogout) {
             pApp.setVisible(false);
             pLogin.setVisible(true);
+            lAppName.setText("");
+            lAppCash.setText("");
+            tfCauseDes.setText("");
+            tfCause.setText("");
+            tfHowM.setText("");
+            cbSign.setSelectedIndex(2);
+            dataBase.user.clear();
+            dataBase.id.clear();
+            
         }
         
         if (src == bApply) {
+            String cas = tfCause.getText();
+            String how = tfHowM.getText();
+            String casDes = tfCauseDes.getText();
+            String use = lAppName.getText();
+            String appC = lAppCash.getText();
+            char ch = (char)cbSign.getSelectedItem();
+            
+            if(ch == '-'){
+                how = '-'+how;
+            }
+            
+            
+            String queryDes = "SELECT cause_designation FROM APPDATA WHERE cause_designation=?";
+            boolean checkCauseDesignation = dataBase.checkUserData(casDes, queryDes);
+                
+            if(checkCauseDesignation){
+                JOptionPane.showMessageDialog(null, "Już jest w bazie powód o takim oznaczeniu.");
+            }else if(!isNumeric(how) || cas.isEmpty() || casDes.isEmpty() || ch == ' '){
+                    JOptionPane.showMessageDialog(null, "Wypełnij wszystkie pola poprawnie.");
+            }else {
+                String idUser = "id";
+                String que = "SELECT id_user FROM USER WHERE user_name = '" + use + "'";
+                dataBase.connection(que, idUser);
+                int iduse = dataBase.id.get(0);
+                
+                String que1 = "INSERT INTO APPDATA (cause, how_much, sign, id_O1_user, cause_designation) VALUES ('" + cas + "', '" + how + "', '" + ch + "', '" + iduse + "', '" + casDes + "')";
+                dataBase.add(que1);
+                
+                String apd = "APPDATA";
+                String que2 = "SELECT * FROM APPDATA WHERE cause_designation = '" + casDes + "'";
+                dataBase.connection(que2, apd);
+                double x = dataBase.appData.get(0).getHowMuch();
+                double y = Double.parseDouble(appC);
+                double sum = x + y;
+                String que3 = "UPDATE USER SET cash = '" + sum + "' WHERE id_user = '" + iduse + "'";
+                //UPDATE `user` SET `cash` = '100' WHERE `user`.`id_user` = 13;
+                dataBase.add(que3);
+                lAppCash.setText(""+sum+"");
+                dataBase.appData.clear();
+                
+                tfCauseDes.setText("");
+                tfCause.setText("");
+                tfHowM.setText("");
+                cbSign.setSelectedIndex(2);
+            }
             
         }
         
